@@ -1,0 +1,13 @@
+# Syntax Coloring Map For ExampleLibrary
+
+# Datatypes (KEYWORD1)
+lm    KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+setBufferPixel KEYWORD2
+sendBuffer KEYWORD2
+clearBufferPixel KEYWORD2
+
+# Instances (KEYWORD2)
+
+# Constants (LITERAL1)
