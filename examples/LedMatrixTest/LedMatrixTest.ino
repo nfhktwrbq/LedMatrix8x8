@@ -1,7 +1,9 @@
 #include "LedMatrix.h"
 #define LM_CS_PIN 2
 
-LedMatrix lm(LM_CS_PIN);
+#define LM_PRINT_MARTIX_TO_SERIAL (false)
+
+LedMatrix lm(LM_CS_PIN, LM_PRINT_MARTIX_TO_SERIAL);
 
 void setup() 
 {

@@ -1,5 +1,6 @@
 #include <string.h>
 #include "LedMatrix.h"
+#include "HardwareSerial.h"
 #include "SPI.h"
 
 const uint8_t NO_OP_CMD         = 0x00;
@@ -20,9 +21,12 @@ const uint8_t DISPLAY_TEST_CMD  = 0x0F;
 const uint8_t SHUTDOWN_OFF      = 0x01;
 const uint8_t NO_DECODE         = 0x00;
 
-LedMatrix::LedMatrix(uint8_t cs_pin)
+LedMatrix::LedMatrix(uint8_t cs_pin, bool is_serial_print=false, uint8_t led_en_char='*', uint8_t led_dis_char='.')
 {
-    cs_pin_ = cs_pin;
+    cs_pin_ = cs_pin;        
+    led_en_char_ = led_en_char;
+    led_dis_char_ = led_dis_char;
+    is_serial_print_ = is_serial_print;
 }
 
 void LedMatrix::begin(void)
@@ -51,6 +55,24 @@ void LedMatrix::send_cmd_(uint8_t address, uint8_t value)
     digitalWrite(cs_pin_, HIGH);
 }
 
+void LedMatrix::print_line_(uint8_t line_data)
+{
+    uint8_t led_char;
+    for (uint8_t i = 0; i < LED_MATRIX_LINES_LEN; i++)
+    {
+        if (line_data & (1 << (LED_MATRIX_LINES_LEN - 1)))
+        {
+            led_char = led_en_char_;
+        }
+        else
+        {
+            led_char = led_dis_char_;
+        }
+        Serial.write(led_char);
+        line_data <<= 1;
+    }
+}
+
 void LedMatrix::setBuffer(uint8_t * buffer)
 {
     memcpy(buffer_, buffer, LED_MATRIX_LINES_QTY);    
@@ -71,6 +93,15 @@ void LedMatrix::sendBuffer(void)
     for (uint8_t digit = DIGIT_0_CMD; digit <= DIGIT_7_CMD; digit++)
     {
        send_cmd_(digit, buffer_[digit - DIGIT_0_CMD]);
+       if (is_serial_print_)
+       {
+            print_line_(buffer_[digit - DIGIT_0_CMD]);
+            Serial.println("");
+       }
+    }
+    if (is_serial_print_)
+    {
+        Serial.println("--------");
     }
 }
 
