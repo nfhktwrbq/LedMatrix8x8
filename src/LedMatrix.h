@@ -6,7 +6,7 @@
 class LedMatrix 
 {
   public:               
-    LedMatrix(uint8_t cs_pin);
+    LedMatrix(uint8_t cs_pin, bool is_serial_print=false, uint8_t led_en_char='*', uint8_t led_dis_char='.');
 
     void begin(void);
     void setArray(uint8_t * array);
@@ -20,6 +20,10 @@ class LedMatrix
 
   private:
     uint8_t cs_pin_;
+    uint8_t led_en_char_;
+    uint8_t led_dis_char_;
+    bool is_serial_print_;
     uint8_t buffer_[LED_MATRIX_LINES_QTY];
     void send_cmd_(uint8_t address, uint8_t value);
+    void print_line_(uint8_t line_data);
 };
